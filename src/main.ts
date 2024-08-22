@@ -1,5 +1,6 @@
 import "./style.css";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
@@ -36,7 +37,15 @@ document.body.style.overflow = "hidden";
 document.body.appendChild(renderer.domElement);
 
 /**
- * 4. 객체 생성
+ * 4. OrbitControls 생성
+ * OrbitControls : https://threejs.org/docs/#examples/ko/controls/OrbitControls
+ */
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+
+/**
+ * 5. 객체 생성
  * BoxGeometry : https://threejs.org/docs/#api/en/geometries/BoxGeometry
  * MeshPhongMaterial : https://threejs.org/docs/#api/en/materials/MeshPhongMaterial
  * Mesh : https://threejs.org/docs/#api/en/objects/Mesh
@@ -56,17 +65,30 @@ circle.position.set(2, 0, 0);
 scene.add(circle);
 
 /**
- * 5. 조명
+ * 6. 조명
  * PointLight : https://threejs.org/docs/#api/en/lights/PointLight
  */
-const light = new THREE.PointLight(0xffffff, 1, 100);
-light.position.set(0, 0, 10);
-scene.add(light);
+const pointLight = new THREE.PointLight(0xffffff, 0.5);
+pointLight.position.set(0, 0, 10);
+scene.add(pointLight);
 
-camera.position.z = 10; // 카메라 위치 조정
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight.position.set(5, 5, 5);
+scene.add(directionalLight);
+
+const spotLight = new THREE.SpotLight(0xffffff, 0.5);
+spotLight.position.set(-5, 5, 5);
+spotLight.angle = Math.PI / 6;
+spotLight.penumbra = 0.1;
+scene.add(spotLight);
+
+const ambientLight = new THREE.AmbientLight(0x404040);
+scene.add(ambientLight);
+
+camera.position.z = 10;
 
 /**
- * 6. 텍스트 생성
+ * 7. 텍스트 생성
  * FontLoader : https://threejs.org/docs/#api/en/loaders/FontLoader
  * TextGeometry : https://threejs.org/docs/#api/en/geometries/TextGeometry
  */
@@ -89,7 +111,7 @@ loader.load(
 );
 
 /**
- * 7. 애니메이션
+ * 8. 애니메이션
  * requestAnimationFrame : https://developer.mozilla.org/ko/docs/Web/API/Window/requestAnimationFrame
  */
 function animate() {
@@ -102,12 +124,16 @@ function animate() {
   // 원 움직임
   circle.position.y = Math.sin(Date.now() * 0.001) * 1;
 
+  // 포인트 라이트 움직임
+  const time = Date.now() * 0.001;
+  pointLight.position.x = Math.sin(time) * 3;
+  pointLight.position.z = Math.cos(time) * 3;
+
+  controls.update(); // OrbitControls 업데이트
   renderer.render(scene, camera);
 }
 
 animate();
-
-console.log("Script finished");
 
 /**
  * 8. 반응형 처리
