@@ -75,3 +75,7 @@ object.position.set(x, y, z);
 - 3D 공간에서 객체의 위치를 설정
 - x는 좌우, y는 상하, z는 앞뒤를 나타냄
 - 예시: position.set(2, 0, 0)는 오른쪽으로 2만큼 이동
+
+## 2️⃣ 2회차 : camera, light
+https://github.com/user-attachments/assets/da05eb5c-aa1f-46ee-9b25-8be484987946
+
