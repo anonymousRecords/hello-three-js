@@ -131,9 +131,17 @@ function animate() {
 
   controls.update(); // OrbitControls 업데이트
   renderer.render(scene, camera);
-}
 
-animate();
+    // 새로운 오브젝트 애니메이션
+    torus.rotation.x += 0.01;
+    torus.rotation.y += 0.01;
+    
+    texturedCube.rotation.x += 0.005;
+    texturedCube.rotation.y += 0.005;
+  
+    controls.update(); // OrbitControls 업데이트
+    renderer.render(scene, camera);
+}
 
 /**
  * 8. 반응형 처리
@@ -145,3 +153,45 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
+
+/**
+ * 9. 새로운 Geometry 추가
+ * TorusGeometry : https://threejs.org/docs/#api/en/geometries/TorusGeometry
+ */
+const torusGeometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
+const torusMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+torus.position.set(-2, -1, 0);
+scene.add(torus);
+
+/**
+ * 10. Texture 적용
+ * TextureLoader : https://threejs.org/docs/#api/en/loaders/TextureLoader
+ */
+const textureLoader = new THREE.TextureLoader();
+const woodTexture = textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg');
+
+const texturedCubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+const texturedCubeMaterial = new THREE.MeshStandardMaterial({ map: woodTexture });
+const texturedCube = new THREE.Mesh(texturedCubeGeometry, texturedCubeMaterial);
+texturedCube.position.set(2, -1, 0);
+scene.add(texturedCube);
+
+/**
+ * 11. 다양한 Material 적용
+ * MeshBasicMaterial : https://threejs.org/docs/#api/en/materials/MeshBasicMaterial
+ * MeshNormalMaterial : https://threejs.org/docs/#api/en/materials/MeshNormalMaterial
+ */
+const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+
+const basicMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const basicSphere = new THREE.Mesh(sphereGeometry, basicMaterial);
+basicSphere.position.set(0, 2, 0);
+scene.add(basicSphere);
+
+const normalMaterial = new THREE.MeshNormalMaterial();
+const normalSphere = new THREE.Mesh(sphereGeometry, normalMaterial);
+normalSphere.position.set(2, 2, 0);
+scene.add(normalSphere);
+
+animate();
